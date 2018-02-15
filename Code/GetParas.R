@@ -1,0 +1,327 @@
+# Function to initiate dataframe to store AIC and randomize the parameters for each try
+
+Start_random <- function(Paras, Ntries) {
+  
+  # Initiate an empty dataframe (containing the calculated starting values in the first line) to store the randomized starting values
+  N_names = c('E_a_strt', 'E_d_strt', 'T_pk_strt', 'constant_strt','b', 'AIC','BIC', 'R_sq','Ea_end','Ed_end','Tpk_end','B0_end','B0_se','Ea_se','Ed_se','Tpk_se','b_se')
+  N_rows <- Ntries # number of tries
+  N_col = length(N_names)
+  N = matrix(data = "", N_rows, N_col, dimnames = list(NULL, N_names))
+  N[1, "E_a_strt"] <- Paras$Ea # print E_a_strt calculated in the first line
+  N[1, "E_d_strt"] <- Paras$Ed # print E_d_strt calculated in the first line
+  N[1, "T_pk_strt"] <- Paras$Tpk # print T_pk_strt calculated in the first line
+  N[1, "constant_strt"] <- Paras$B0 # print constant_strt calculated in the first line
+  
+  N = as.data.frame(N)
+  N$E_a_strt = as.numeric(as.character(N$E_a_strt))
+  N$E_d_strt = as.numeric(as.character(N$E_d_strt))
+  N$T_pk_strt = as.numeric(as.character(N$T_pk_strt))
+  N$constant_strt = as.numeric(as.character(N$constant_strt))
+  N$b = as.numeric(as.character(N$b))
+  N$AIC = as.numeric(as.character(N$AIC))
+  N$BIC = as.numeric(as.character(N$BIC))
+  N$R_sq = as.numeric(as.character(N$R_sq))
+  N$Ea_end = as.numeric(as.character(N$Ea_end))
+  N$Ed_end = as.numeric(as.character(N$Ed_end))
+  N$Tpk_end = as.numeric(as.character(N$Tpk_end))
+  N$B0_end = as.numeric(as.character(N$B0_end))
+  N$B0_se = as.numeric(as.character(N$B0_se))
+  N$Ea_se = as.numeric(as.character(N$Ea_se))
+  N$Ed_se = as.numeric(as.character(N$Ed_se))
+  N$Tpk_se = as.numeric(as.character(N$Tpk_se))
+  N$b_se = as.numeric(as.character(N$b_se))
+  
+  if (is.na(Paras$Ed) == T){
+    Paras$Ed <- 2*Paras$Ea
+  }
+  
+  # Fill N with randomised starting values
+  for (j in 2:Ntries) {
+    N$E_a_strt[j] <- rtruncnorm(1, a=0, b=Inf, mean = N[1,1], sd=2*N[1,1]) # randomized E_a_strt
+    N$E_d_strt[j] <- Paras$Ed
+    N$T_pk_strt[j] <- rtruncnorm(1, a=0, b=Inf, mean = N[1,3], sd=15) # randomized T_pk_strt
+    N$constant_strt[j] <- rtruncnorm(1, a=0, b=Inf, mean = N[1,4], sd=N[1,4]/2) # randomized constant_strt
+  }
+  
+  # Verifying condition that E_d_strt > E_a_strt
+  for (j in 1:Ntries) {
+    if (N$E_a_strt[j] >= Paras$Ed) {
+      N$E_d_strt[j] <- 2*N$E_a_strt[j]
+    }
+    return(N)
+  }
+}
+
+
+
+
+
+Fit_NoSchoolfield <- function(Ntries, N, site, TempN) {
+  
+  for (j in 1:Ntries) {
+    
+    NLS <- NULL
+    
+    NLS <- tryCatch (nlsLM(LogC ~ SchoolfieldNo(B0, E, Ed, TempH, TempN, Temp = chamber.T.Kelvin),
+                                data = site,
+                                start = list(B0 = N$constant_strt[j], E = N$E_a_strt[j], Ed = N$E_d_strt[j], TempH = N$T_pk_strt[j]),
+                                control = nls.lm.control(maxiter = 1000, ftol = .Machine$double.eps, ptol = .Machine$double.eps,maxfev = 1000),
+                                lower = c(-Inf, 0, 0, 0),
+                                upper = c(Inf, Inf, Inf, 353.15)),
+                          error = function(e) NULL)
+    
+    # If the model converges, print AIC and R² in the N table
+    # AIC and R² will be used in another function to choose between the models that converged
+    
+    if (is.null(NLS) == FALSE) {
+      
+      #want to calculate R2 in linear space
+      #we need the predicted values of the model
+      pred <- exp(SchoolfieldNo(summary(NLS)$coefficient[1,1],summary(NLS)$coefficient[2,1],summary(NLS)$coefficient[3,1],
+                              summary(NLS)$coefficient[4,1],TempN,site$chamber.T.Kelvin))
+      
+      #need the residual sum of squares and the true sum of squares
+      rss <- sum(((site$O2.consumption)-pred)^2)
+      tss <- sum(((site$O2.consumption)-(mean(site$O2.consumption)))^2)
+      #get R2
+      N$R_sq[j] <- 1 - (rss/tss)
+      
+      
+      #let's calculate AIC and BIC too
+      n <- as.numeric(length(site$LogC))
+      k <- 4
+      #AIC
+      N$AIC[j] <- n * log((2*pi)/n) + n + 2 + n * log(rss) + 2*k
+      #BIC
+      N$BIC[j] <- n + n * log(2 * pi) + n * log(rss/n) + (log(n)) * (k + 1)
+      
+      #let's also store the NLS output
+      N$B0_end[j] <- summary(NLS)$coefficient[1,1]
+      N$Ea_end[j] <- summary(NLS)$coefficient[2,1]
+      N$Ed_end[j] <- summary(NLS)$coefficient[3,1]
+      N$Tpk_end[j] <- summary(NLS)$coefficient[4,1]
+      N$B0_se[j] <- summary(NLS)$coefficients[1, 2]
+      N$Ea_se[j] <- summary(NLS)$coefficients[2, 2]
+      N$Ed_se[j] <- summary(NLS)$coefficients[3, 2]
+      N$Tpk_se[j] <- summary(NLS)$coefficients[4, 2]
+    }
+  }
+  return(N)
+}
+
+
+Fit_NoSchoolfield.corr <- function(Ntries, N, site, TempN) {
+  
+  for (j in 1:Ntries) {
+    
+    NLS <- NULL
+    
+    NLS <- tryCatch (nlsLM(LogC.corr ~ SchoolfieldNo(B0, E, Ed, TempH, TempN, Temp = chamber.T.Kelvin),
+                           data = site,
+                           start = list(B0 = N$constant_strt[j], E = N$E_a_strt[j], Ed = N$E_d_strt[j], TempH = N$T_pk_strt[j]),
+                           control = nls.lm.control(maxiter = 1000, ftol = .Machine$double.eps, ptol = .Machine$double.eps,maxfev = 1000),
+                           lower = c(-Inf, 0, 0, 0),
+                           upper = c(Inf, Inf, Inf, 353.15)),
+                     error = function(e) NULL)
+    
+    # If the model converges, print AIC and R² in the N table
+    # AIC and R² will be used in another function to choose between the models that converged
+    
+    if (is.null(NLS) == FALSE) {
+      
+      #want to calculate R2 in linear space
+      #we need the predicted values of the model
+      pred <- exp(SchoolfieldNo(summary(NLS)$coefficient[1,1],summary(NLS)$coefficient[2,1],summary(NLS)$coefficient[3,1],
+                                summary(NLS)$coefficient[4,1],TempN,site$chamber.T.Kelvin))
+      
+      #need the residual sum of squares and the true sum of squares
+      rss <- sum(((site$Mass.corrC)-pred)^2)
+      tss <- sum(((site$Mass.corrC)-(mean(site$Mass.corrC)))^2)
+      #get R2
+      N$R_sq[j] <- 1 - (rss/tss)
+      
+      
+      #let's calculate AIC and BIC too
+      n <- as.numeric(length(site$LogC))
+      k <- 4
+      #AIC
+      N$AIC[j] <- n * log((2*pi)/n) + n + 2 + n * log(rss) + 2*k
+      #BIC
+      N$BIC[j] <- n + n * log(2 * pi) + n * log(rss/n) + (log(n)) * (k + 1)
+      
+      #let's also store the NLS output
+      N$B0_end[j] <- summary(NLS)$coefficient[1,1]
+      N$Ea_end[j] <- summary(NLS)$coefficient[2,1]
+      N$Ed_end[j] <- summary(NLS)$coefficient[3,1]
+      N$Tpk_end[j] <- summary(NLS)$coefficient[4,1]
+      N$B0_se[j] <- summary(NLS)$coefficients[1, 2]
+      N$Ea_se[j] <- summary(NLS)$coefficients[2, 2]
+      N$Ed_se[j] <- summary(NLS)$coefficients[3, 2]
+      N$Tpk_se[j] <- summary(NLS)$coefficients[4, 2]
+    }
+  }
+  return(N)
+}
+
+
+Fit_MSchoolfield <- function(Ntries, N, site, TempN) {
+  
+  for (j in 1:Ntries) {
+    
+    NLS <- NULL
+    
+    NLS <- tryCatch (nlsLM(LogC ~ SchoolfieldM(B0, b, m = Mean.mass, E, Ed, TempH, TempN, Temp = chamber.T.Kelvin),
+                           data = site,
+                           start = list(B0 = N$constant_strt[j], b = 0.75, E = N$E_a_strt[j], Ed = N$E_d_strt[j], TempH = N$T_pk_strt[j]),
+                           control = nls.lm.control(maxiter = 1000, ftol = .Machine$double.eps, ptol = .Machine$double.eps,maxfev = 1000),
+                           lower = c(-Inf, -Inf, 0, 0, 0),
+                           upper = c(Inf, Inf, Inf, Inf, 353.15)),
+                     error = function(e) NULL)
+    
+    # If the model converges, print AIC and R² in the N table
+    # AIC and R² will be used in another function to choose between the models that converged
+    
+    if (is.null(NLS) == FALSE) {
+      
+      #want to calculate R2 in linear space
+      #we need the predicted values of the model
+      pred <- exp(SchoolfieldM(summary(NLS)$coefficient[1,1],summary(NLS)$coefficient[2,1],site$Mean.mass,summary(NLS)$coefficient[3,1],
+                                summary(NLS)$coefficient[4,1],summary(NLS)$coefficient[5,1],TempN,site$chamber.T.Kelvin))
+      
+      #need the residual sum of squares and the true sum of squares
+      rss <- sum(((site$O2.consumption)-pred)^2)
+      tss <- sum(((site$O2.consumption)-(mean(site$O2.consumption)))^2)
+      #get R2
+      N$R_sq[j] <- 1 - (rss/tss)
+      
+      
+      #let's calculate AIC and BIC too
+      n <- as.numeric(length(site$LogC))
+      k <- 5
+      #AIC
+      N$AIC[j] <- n * log((2*pi)/n) + n + 2 + n * log(rss) + 2*k
+      #BIC
+      N$BIC[j] <- n + n * log(2 * pi) + n * log(rss/n) + (log(n)) * (k + 1)
+      
+      #let's also store the NLS output
+      N$B0_end[j] <- summary(NLS)$coefficient[1,1]
+      N$Ea_end[j] <- summary(NLS)$coefficient[3,1]
+      N$Ed_end[j] <- summary(NLS)$coefficient[4,1]
+      N$Tpk_end[j] <- summary(NLS)$coefficient[5,1]
+      N$B0_se[j] <- summary(NLS)$coefficients[1, 2]
+      N$Ea_se[j] <- summary(NLS)$coefficients[3, 2]
+      N$Ed_se[j] <- summary(NLS)$coefficients[4, 2]
+      N$Tpk_se[j] <- summary(NLS)$coefficients[5, 2]
+      
+      #remember to save b as well
+      N$b[j] <- summary(NLS)$coefficient[2,1]
+      N$b_se[j] <- summary(NLS)$coefficients[2, 2]
+    }
+  }
+  return(N)
+}
+
+
+
+# Function to select the best set of starting values for the model and to fit the model to the data with these starting values
+
+Select_startvalNo = function (N) {
+  N <- subset(N, N$R_sq >= 0)
+  
+  R2.m <- mean(N$R_sq, na.rm=T)
+  AIC.m <- mean(N$AIC, na.rm=T)
+  BIC.m <- mean(N$BIC, na.rm= T)
+  
+  MinAIC = subset(N, N$AIC == min(N$AIC, na.rm=TRUE))
+  MinBIC = subset(MinAIC, MinAIC$BIC==min(MinAIC$BIC, na.rm=TRUE))
+  MaxR_sq = subset(MinBIC, MinBIC$R_sq==max(MinBIC$R_sq, na.rm=TRUE))
+  
+  if (nrow(MaxR_sq) == 1) {
+    E_a_strt <- MaxR_sq$E_a_strt
+    E_d_strt <- MaxR_sq$E_d_strt
+    T_pk_strt <- MaxR_sq$T_pk_strt
+    constant_strt <- MaxR_sq$constant_strt
+    AIC <- MaxR_sq$AIC
+    BIC <- MaxR_sq$BIC
+    R2 <- MaxR_sq$R_sq
+    Ea_end <- MaxR_sq$Ea_end
+    Ed_end <- MaxR_sq$Ed_end
+    Tpk_end <- MaxR_sq$Tpk_end
+    B0_end <- MaxR_sq$B0_end
+    B0_se <- MaxR_sq$B0_se
+    Ea_se <- MaxR_sq$Ea_se
+    Ed_se <- MaxR_sq$Ed_se
+    Tpk_se <- MaxR_sq$Tpk_se
+  }
+  
+  else if (nrow(MaxR_sq) > 1) {
+    E_a_strt <- MaxR_sq$E_a_strt[1]
+    E_d_strt <- MaxR_sq$E_d_strt[1]
+    T_pk_strt <- MaxR_sq$T_pk_strt[1]
+    constant_strt <- MaxR_sq$constant_strt[1]
+    AIC <- MaxR_sq$AIC[1]
+    BIC <- MaxR_sq$BIC[1]
+    R2 <- MaxR_sq$R_sq[1]
+    Ea_end <- MaxR_sq$Ea_end
+    Ed_end <- MaxR_sq$Ed_end
+    Tpk_end <- MaxR_sq$Tpk_end
+    B0_end <- MaxR_sq$B0_end
+    B0_se <- MaxR_sq$B0_se
+    Ea_se <- MaxR_sq$Ea_se
+    Ed_se <- MaxR_sq$Ed_se
+    Tpk_se <- MaxR_sq$Tpk_se
+  }
+  return(data.frame(constant_strt,E_a_strt,E_d_strt,T_pk_strt,B0_end,B0_se,Ea_end,Ea_se,Ed_end,Ed_se,Tpk_end,Tpk_se,AIC,BIC,R2,AIC.m,BIC.m,R2.m))
+}
+
+Select_startvalM = function (N) {
+  N <- subset(N, N$R_sq >= 0)
+  
+  R2.m <- mean(N$R_sq, na.rm=T)
+  AIC.m <- mean(N$AIC, na.rm=T)
+  BIC.m <- mean(N$BIC, na.rm= T)
+  
+  MinAIC = subset(N, N$AIC == min(N$AIC, na.rm=TRUE))
+  MinBIC = subset(MinAIC, MinAIC$BIC==min(MinAIC$BIC, na.rm=TRUE))
+  MaxR_sq = subset(MinBIC, MinBIC$R_sq==max(MinBIC$R_sq, na.rm=TRUE))
+  
+  if (nrow(MaxR_sq) == 1) {
+    E_a_strt <- MaxR_sq$E_a_strt
+    E_d_strt <- MaxR_sq$E_d_strt
+    T_pk_strt <- MaxR_sq$T_pk_strt
+    constant_strt <- MaxR_sq$constant_strt
+    b <- MaxR_sq$b
+    AIC <- MaxR_sq$AIC
+    BIC <- MaxR_sq$BIC
+    R2 <- MaxR_sq$R_sq
+    Ea_end <- MaxR_sq$Ea_end
+    Ed_end <- MaxR_sq$Ed_end
+    Tpk_end <- MaxR_sq$Tpk_end
+    B0_end <- MaxR_sq$B0_end
+    B0_se <- MaxR_sq$B0_se
+    Ea_se <- MaxR_sq$Ea_se
+    Ed_se <- MaxR_sq$Ed_se
+    Tpk_se <- MaxR_sq$Tpk_se
+    b_se <- MaxR_sq$b_se
+  }
+  
+  else if (nrow(MaxR_sq) > 1) {
+    E_a_strt <- MaxR_sq$E_a_strt[1]
+    E_d_strt <- MaxR_sq$E_d_strt[1]
+    T_pk_strt <- MaxR_sq$T_pk_strt[1]
+    constant_strt <- MaxR_sq$constant_strt[1]
+    b <- MaxR_sq$b[1]
+    AIC <- MaxR_sq$AIC[1]
+    BIC <- MaxR_sq$BIC[1]
+    R2 <- MaxR_sq$R_sq[1]
+    Ea_end <- MaxR_sq$Ea_end
+    Ed_end <- MaxR_sq$Ed_end
+    Tpk_end <- MaxR_sq$Tpk_end
+    B0_se <- MaxR_sq$B0_se
+    Ea_se <- MaxR_sq$Ea_se
+    Ed_se <- MaxR_sq$Ed_se
+    Tpk_se <- MaxR_sq$Tpk_se
+    b_se <- MaxR_sq$b_se
+  }
+  return(data.frame(constant_strt,b,b_se,E_a_strt,E_d_strt,T_pk_strt,B0_end,B0_se,Ea_end,Ea_se,Ed_end,Ed_se,Tpk_end,Tpk_se,AIC,BIC,R2,AIC.m,BIC.m,R2.m))
+}

@@ -1,0 +1,53 @@
+rm(list = ls())
+dev.off()
+
+setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/")
+
+School1 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRuns5.csv")
+School2 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRuns10.csv")
+School3 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRuns15.csv")
+School4 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRunsMean.csv")
+School5 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRunsMedian.csv")
+School6 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRunsMeanSub.csv")
+School7 <- read.csv("../Results/SchoolField/Revised/SchoolFieldRunsMedianSub.csv")
+School <- rbind(School1,School2,School3,School4,School5,School6,School7)
+School$X <- as.factor(c(rep(1,36),rep(2,36),rep(3,36),rep(4,36),rep(5,36),rep(6,36),rep(7,36)))
+
+School <- subset(School, School$Model != "No Mass")
+Chiro <- subset(School, School$Genus == "Chironomus")
+Cloeon <- subset(School, School$Genus == "Cloeon")
+Strio <- subset(School, School$Genus == "Sympetrum")
+
+plot(School$Model, School$R2)
+plot(Chiro$Model,Chiro$R2)
+plot(Cloeon$Model,Cloeon$R2)
+plot(Strio$Model,Strio$R2)
+
+min(School[School$Model == "Free Mass Scaling",]$R2)
+min(School[School$Model == "0.75 Mass Corrected",]$R2)
+min(Chiro[Chiro$Model == "Free Mass Scaling",]$R2)
+min(Chiro[Chiro$Model == "0.75 Mass Corrected",]$R2)
+min(Cloeon[Cloeon$Model == "Free Mass Scaling",]$R2)
+min(Cloeon[Cloeon$Model == "0.75 Mass Corrected",]$R2)
+min(Strio[Strio$Model == "Free Mass Scaling",]$R2)
+min(Strio[Strio$Model == "0.75 Mass Corrected",]$R2)
+
+mean(School[School$Model == "Free Mass Scaling",]$R2)
+mean(School[School$Model == "0.75 Mass Corrected",]$R2)
+mean(Chiro[Chiro$Model == "Free Mass Scaling",]$R2)
+mean(Chiro[Chiro$Model == "0.75 Mass Corrected",]$R2)
+mean(Cloeon[Cloeon$Model == "Free Mass Scaling",]$R2)
+mean(Cloeon[Cloeon$Model == "0.75 Mass Corrected",]$R2)
+mean(Strio[Strio$Model == "Free Mass Scaling",]$R2)
+mean(Strio[Strio$Model == "0.75 Mass Corrected",]$R2)
+
+SchoolPred <- subset(Strio, Strio$Model == "0.75 Mass Corrected")
+SchoolPrey <- rbind(subset(Chiro, Chiro$Model == "Free Mass Scaling"),subset(Cloeon, Cloeon$Model == "Free Mass Scaling"))
+
+plot(SchoolPred$X,SchoolPred$R2)
+plot(SchoolPrey[SchoolPrey$Genus == "Chironomus",]$X,SchoolPrey[SchoolPrey$Genus == "Chironomus",]$R2)
+plot(SchoolPrey[SchoolPrey$Genus == "Cloeon",]$X,SchoolPrey[SchoolPrey$Genus == "Cloeon",]$R2)
+
+plot(SchoolPred$X,SchoolPred$B0_end)
+plot(SchoolPrey[SchoolPrey$Genus == "Chironomus",]$X,SchoolPrey[SchoolPrey$Genus == "Chironomus",]$B0_end)
+plot(SchoolPrey[SchoolPrey$Genus == "Cloeon",]$X,SchoolPrey[SchoolPrey$Genus == "Cloeon",]$B0_end)
