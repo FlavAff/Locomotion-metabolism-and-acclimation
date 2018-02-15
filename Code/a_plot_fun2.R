@@ -38,12 +38,12 @@ SiteSearchRate.Vopt4.version1 <- function(sit,sppC,sppR,consumer,resource,maxi){
   
   p <- ggplot() + theme_classic() +
     theme(axis.title=element_text(size=22)) +
-    geom_line(data = aS2D, aes(x = Temperature, y = sessile2D, colour = "2D sessile prey"), size = I(2), alpha = 1) + 
+    geom_line(data = aS2D, aes(x = Temperature, y = sessile2D, colour = "2D sessile prey"), size = I(1), alpha = .4) + 
     xlab(expression(paste("Temperature (", degree, C, ")"))) + 
     ylab(expression(paste("Search rate"))) 
   p <- p + geom_line(data = aS3D, aes(x = Temperature, y = sessile3D, colour = "3D sessile prey"), size = I(1), alpha = 0.4)
   p <- p + geom_line(data = aA2D, aes(x = Temperature, y = active2D, colour = "2D active prey"), size = I(1), alpha = 0.4)
-  p <- p + geom_line(data = aA3D, aes(x = Temperature, y = active3D, colour = "3D active prey"), size = I(1), alpha = 0.4)
+  p <- p + geom_line(data = aA3D, aes(x = Temperature, y = active3D, colour = "3D active prey"), size = I(2), alpha = 1)
   p <- p + scale_color_discrete(name = "Model Strategy") + xlim(5,30) + ylim(0,maxi)#+ ggtitle(paste(sit,"Model Predictions")) + theme(plot.title = element_text(face="bold")) 
   p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20)) + theme(axis.text=element_text(size=15))
   
