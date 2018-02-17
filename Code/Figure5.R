@@ -7,7 +7,7 @@ library(ggplot2)
 library(data.table)
 library(gridExtra)
 
-setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("DataClean.R")
 rm(list=setdiff(ls(), c("chir","dipt","strio","k")))
 source("Schoolfields2.R")
@@ -78,21 +78,21 @@ Plot_two_curves_v0 <- function(spp1,spp2,locations,spp1_values,spp2_values,GCOT1
 }
 
 #get values for v0 transformation
-chir_GCOT4 <- GCOT4(mean(chir$Mass)/1000)
-dipt_GCOT4 <- GCOT4(mean(dipt$Mass)/1000)
-stri_GCOT4 <- GCOT4(mean(strio$Mass)/1000)
+chir_GCOT <- GCOT(mean(chir$Mass)/1000)
+dipt_GCOT <- GCOT(mean(dipt$Mass)/1000)
+stri_GCOT <- GCOT(mean(strio$Mass)/1000)
 
 chir_m <- mean(chir$Mass)/1000
 dipt_m <- mean(dipt$Mass)/1000
 stri_m <- mean(strio$Mass)/1000
 
 #plot the predator-prey velocity curves
-pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Toledo"),stri_values,chir_values,stri_GCOT4,chir_GCOT4,stri_m,chir_m,"orange")
+pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Toledo"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
 #remeber to unhash function to get title on plot here:
-pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT4,chir_GCOT4,stri_m,chir_m,"orange")
+pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
 
-pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Toledo"),stri_values,dipt_values,stri_GCOT4,dipt_GCOT4,stri_m,dipt_m,"pink")
-pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT4,dipt_GCOT4,stri_m,dipt_m,"pink")
+pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Toledo"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
+pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
 
 #modify plots befor multiplot run
 pTolCh <- pTolCh + ggtitle("Cool site (Toledo)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +

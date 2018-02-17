@@ -3,32 +3,7 @@ power <- function(b0){
   return((b0*(31.988*10^(-3))*(3.34*1000)*4.1868)/3600)
 }
 
-v0 <- function(P0,L,visc){
-  
-  return(sqrt(P0/(3*pi*L*visc)))
-}
-
-v0.r <- function(P0,L,visc){
-  
-  return(sqrt(P0/(3*pi*0.5*L*visc)))
-}
-
-GCOT1 <- function(M) {
-  
-  return(0.33*M^(-0.24))
-}
-
-GCOT2 <- function(M,L) {
-  
-  return(0.33*M^(0.05)/L)
-}
-
-GCOT3 <- function(M,L) {
-  
-  return(0.8*M^1.19/(L*M*9.82))
-}
-
-GCOT4 <- function(M) {
+GCOT <- function(M) {
   
   return(1.1*M^(-0.38))
 }

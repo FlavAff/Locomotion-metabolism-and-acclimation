@@ -8,9 +8,11 @@ library(data.table)
 library(gridExtra)
 library(grid)
 
-setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("multiplot.R")
 dat <- read.csv("../Results/FurtherMods/a_Ea_b0.csv")
+dat <- dat[,2:8]
+dat$Ea <- -dat$Ea
 datCl <- subset(dat, dat$Genus == "Cloeon")
 datCh <- subset(dat, dat$Genus == "Chironomus")
 
@@ -88,7 +90,7 @@ for (i in c(seq(5,8,1),seq(13,16,1))){
   deltasBse <- c(deltaBse,deltasBse)
 } 
 Genus <- c(rep("Cloeon",4),rep("Chironomus",4))
-Strategy <- rev(dat[c(1:4),3])
+Strategy <- rev(dat[c(1:4),2])
 newdat <- as.data.frame(cbind.data.frame(Genus=as.character(Genus),
                                          Strategy=as.character(Strategy),
                                          deltasE=as.numeric(deltasE),
@@ -110,7 +112,7 @@ print(p5)
 dev.off()
 
 p <- ggplot(data=newdat, aes(x = Strategy, y = deltasB)) + geom_point(aes(),size=I(3))+ 
-  theme_classic() + theme(axis.title=element_text(size=22)) + ylab(expression(paste(Delta,"ln(B0)"))) +
+  theme_classic() + theme(axis.title=element_text(size=22)) + ylab(expression(paste(Delta,"B0"))) +
   theme(axis.text=element_text(size=15))
 p <- p + geom_errorbar(aes(ymin = deltasB - 1.96*deltasBse, ymax = deltasB + 1.96*deltasBse, width=.2))
 p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20))

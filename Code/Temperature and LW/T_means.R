@@ -1,7 +1,7 @@
 rm(list =ls())
 dev.off()
 
-setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/Temperature and LW/")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/Temperature and LW/")
 library(plyr)
 library(data.table)
 
@@ -54,9 +54,9 @@ MesoTemps <- rbind(dplyr::bind_rows(sites$Murcia),dplyr::bind_rows(sites$Toledo)
                 dplyr::bind_rows(sites$Porto),dplyr::bind_rows(sites$Jaca),dplyr::bind_rows(sites$Penalara))
 MesoTempsSub <- subset(MesoTemps, MesoTemps$Month %in% c(1:5,8:12))
 
-Results <- data.frame(matrix(nrow=6, ncol=5))
+Results <- data.frame(matrix(nrow=6, ncol=6))
 Results <- rename(Results, c("X1" = "Mean Temperature","X2" = "Variance in Temperature","X3" = "Median Temperature",
-                             "X4" = "Minimum Temperature", "X5"= "Maximum Temperature"))
+                             "X4" = "Minimum Temperature", "X5"= "Maximum Temperature", "X6"="Mean SE"))
 setattr(Results, "row.names", c("Evora","Jaca","Murcia","Penalara","Porto","Toledo"))
 
 for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
@@ -68,12 +68,14 @@ for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
   T.median <- median(site$Temperature)
   T.min <- min(site$Temperature)
   T.max <- max(site$Temperature)
+  T.mean.se <- sd(site$Temperature)/sqrt(length(site$Temperature))
   
   Results[i,"Mean Temperature"] = T.mean
   Results[i,"Variance in Temperature"] = T.var
   Results[i,"Median Temperature"] = T.median
   Results[i,"Minimum Temperature"] = T.min
   Results[i,"Maximum Temperature"] = T.max
+  Results[i,"Mean SE"] = T.mean.se
 }
 
 write.csv(Results, paste0("../../Results/Temperature/MeanTemp.csv"))
