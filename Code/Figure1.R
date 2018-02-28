@@ -6,7 +6,7 @@ library(minpack.lm)
 library(ggplot2)
 library(data.table)
 
-setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("Schoolfields2.R")
 k <- 8.617*(10^-5)
 
@@ -76,9 +76,9 @@ p <- ggplot() + theme_classic() +
 p <- p + annotate("text", x = 12, y = 2.5, label = "Increase in \n performance", size = 10)
 #p <- p + annotate("text", x = 50, y = 1.9, label = "Warm adapted \n species", size = 10)
 p <- p + annotate("text", x = 1, y = 2.7, label = "B)", size = 10)
-p <- p + geom_segment(aes(x=37, xend=37, y=1.6, yend=2.5), size = 2,
+p <- p + geom_segment(aes(x=25, xend=25, y=0.9, yend=1.4), size = 2,
                       arrow = arrow(length = unit(0.5, "cm")))
-p2 <- p + annotate("text", x=33, y=1.9, label = "b[0]", size=10, parse = TRUE)
+p2 <- p + annotate("text", x=27, y=1.3, label = "b[0]", size=10, parse = TRUE)
 #p2 <- p + annotate("text", x = 32, y = 0.1, label = "Cold adapted species", size = 10)
 tiff("../Results/ConceptB.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p2)
