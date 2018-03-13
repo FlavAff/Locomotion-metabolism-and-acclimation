@@ -4,6 +4,7 @@ dev.off()
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/Temperature and LW/")
 library(plyr)
 library(data.table)
+library(ggplot2)
 
 dat <- read.csv("../../Data/Mesocosms_temperatures4.csv")
 dat$Temperature <- as.numeric(levels(dat$Temperature)[dat$Temperature])
@@ -54,9 +55,9 @@ MesoTemps <- rbind(dplyr::bind_rows(sites$Murcia),dplyr::bind_rows(sites$Toledo)
                 dplyr::bind_rows(sites$Porto),dplyr::bind_rows(sites$Jaca),dplyr::bind_rows(sites$Penalara))
 MesoTempsSub <- subset(MesoTemps, MesoTemps$Month %in% c(1:5,8:12))
 
-Results <- data.frame(matrix(nrow=6, ncol=6))
-Results <- rename(Results, c("X1" = "Mean Temperature","X2" = "Variance in Temperature","X3" = "Median Temperature",
-                             "X4" = "Minimum Temperature", "X5"= "Maximum Temperature", "X6"="Mean SE"))
+Results <- data.frame()
+#Results <- rename(Results, c("X1" = "Mean Temperature","X2" = "Variance in Temperature","X3" = "Median Temperature",
+#                             "X4" = "Minimum Temperature", "X5"= "Maximum Temperature", "X6"="Mean SE"))
 setattr(Results, "row.names", c("Evora","Jaca","Murcia","Penalara","Porto","Toledo"))
 
 for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
@@ -70,18 +71,48 @@ for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
   T.max <- max(site$Temperature)
   T.mean.se <- sd(site$Temperature)/sqrt(length(site$Temperature))
   
-  Results[i,"Mean Temperature"] = T.mean
-  Results[i,"Variance in Temperature"] = T.var
-  Results[i,"Median Temperature"] = T.median
-  Results[i,"Minimum Temperature"] = T.min
-  Results[i,"Maximum Temperature"] = T.max
-  Results[i,"Mean SE"] = T.mean.se
+  Results[i,"Mean.Temperature"] = T.mean
+  Results[i,"Variance.in.Temperature"] = T.var
+  Results[i,"Median.Temperature"] = T.median
+  Results[i,"Minimum.Temperature"] = T.min
+  Results[i,"Maximum.Temperature"] = T.max
+  Results[i,"Mean.SE"] = T.mean.se
 }
 
 write.csv(Results, paste0("../../Results/Temperature/MeanTemp.csv"))
+MesoTemps$Site <- factor(MesoTemps$Site, levels = c("Penalara","Jaca","Porto","Toledo","Evora","Murcia"))
 tiff("../../Results/Temperature/TBox.tiff", width = 20, height = 15, units = 'cm', res = 300, compression = 'lzw')
 plot(MesoTemps$Site,MesoTemps$Temperature)
 dev.off()
 tiff("../../Results/Temperature/TBox2.tiff", width = 20, height = 15, units = 'cm', res = 300, compression = 'lzw')
 plot(MesoTempsSub$Site,MesoTempsSub$Temperature)
 dev.off()
+
+Results$Site <- c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")
+Results$Site <- factor(Results$Site, levels = c("Penalara","Jaca","Porto","Toledo","Evora","Murcia"))
+p <- ggplot(data = Results, aes(x = Site, y = Mean.Temperature)) + geom_point(size=I(4)) + 
+  #geom_line(aes(group=Genus, color=Genus)) + 
+  theme_classic() + theme(axis.title=element_text(size=22)) + ylab("Mean temperature (°C)") +
+  xlab("Site") + theme(axis.text=element_text(size=15))
+p1 <- p + geom_errorbar(aes(ymin = Mean.Temperature - 1.96*Mean.SE, ymax = Mean.Temperature + 1.96*Mean.SE, width=.2))
+tiff("../../Results/Temperature/TMeans.tiff", width = 20, height = 15, units = 'cm', res = 300, compression = 'lzw')
+print(p1)
+dev.off()
+
+Means <- data.frame(Mean=Results$Mean.Temperature,Site=Results$Site)
+p <- ggplot(data = MesoTemps, aes(x = Month, y = Temperature)) + geom_point(alpha=.7,size=I(1),colour="blue") + 
+  ylim(min(MesoTemps$Temperature),max(MesoTemps$Temperature)) + 
+  theme_classic() + theme(axis.title=element_text(size=22)) + ylab("Temperature") + theme(axis.text=element_text(size=15))
+p <- p + facet_grid(Site~., scales = "free", space = "free")
+p <- p + geom_hline(data=Means, aes(yintercept=Mean), color = ("red"))
+p
+tiff("../../Results/Temperature/SiteTemperatures.tiff", width = 20, height = 50, units = 'cm', res = 300, compression = 'lzw')
+print(p)
+dev.off()
+
+
+p <- ggplot(data = MesoTemps, aes(Temperature)) + geom_bar(alpha=.7,size=I(1),colour="blue") + 
+  ylim(0,200) + 
+  theme_classic() + theme(axis.title=element_text(size=22)) + theme(axis.text=element_text(size=15))
+p <- p + facet_grid(Site~., scales = "free", space = "free")
+p

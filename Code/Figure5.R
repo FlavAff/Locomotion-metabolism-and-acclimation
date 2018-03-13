@@ -1,5 +1,5 @@
 rm(list = ls())
-#dev.off()
+dev.off()
 
 library(plyr)
 library(minpack.lm)
@@ -97,19 +97,38 @@ pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),str
 #modify plots befor multiplot run
 pTolCh <- pTolCh + ggtitle("Cool site (Toledo)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +
   theme(axis.title.x=element_blank()) + theme(legend.position = "none") + theme(axis.title.y=element_blank()) +
-  theme(plot.margin=unit(c(0.5,1.5,1,4),"cm"))
+  #theme(plot.margin=unit(c(0.5,1.5,1,4),"cm")) + 
+  geom_rect(aes(xmin=33.6, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pEvoCh <- pEvoCh + theme(axis.title.x=element_blank()) + theme(axis.title.y=element_blank())+
-  theme(plot.margin=unit(c(0.5,0.5,1,1),"cm"))
+  #theme(plot.margin=unit(c(0.5,0.5,1,1),"cm")) + 
+  geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pTolCl <- pTolCl + theme(legend.position = "none") + theme(axis.title.x=element_blank()) + 
-  theme(axis.title.y=element_blank()) + theme(plot.margin=unit(c(0.5,1.5,1.5,4),"cm"))
+  theme(axis.title.y=element_blank()) + #theme(plot.margin=unit(c(0.5,1.5,1.5,4),"cm")) + 
+  geom_rect(aes(xmin=33.6, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pEvoCl <- pEvoCl + theme(axis.title.y=element_blank()) + theme(axis.title.x=element_blank())+
-  theme(plot.margin=unit(c(0.5,0.5,1.5,1),"cm"))
+  #theme(plot.margin=unit(c(0.5,0.5,1.5,1),"cm")) +
+  geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 
 #pCh <- grid_arrange_shared_legend(pTolCh, pEvoCh, ncol = 2, nrow = 1)
 #pCl <- grid_arrange_shared_legend(pTolCl, pEvoCl, ncol = 2, nrow = 1)
 
 #call multiplot
-tiff("../Results/SchoolField/Revised/combinedV0.tiff", width = 30, height = 30, units = 'cm', res = 300, compression = 'lzw')
-multiplot(pTolCh,pTolCl,pEvoCh,pEvoCl, cols =2, 
-          labs=list("Temperature (°C)","Speed (m/s)"))
+#tiff("../Results/SchoolField/Revised/combinedV0.tiff", width = 30, height = 30, units = 'cm', res = 300, compression = 'lzw')
+#multiplot(pTolCh,pTolCl,pEvoCh,pEvoCl, cols =2, 
+#          labs=list("Temperature (°C)","Speed (m/s)"))
+#dev.off()
+
+pEvoCh <- pEvoCh + theme(legend.position = "none")
+pEvoCl <- pEvoCl + theme(legend.position = "none")
+tiff("../Results/SchoolField/Revised/V0TolCh.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+print(pTolCh)
+dev.off()
+tiff("../Results/SchoolField/Revised/V0TolCl.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+print(pTolCl)
+dev.off()
+tiff("../Results/SchoolField/Revised/V0EvoCh.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+print(pEvoCh)
+dev.off()
+tiff("../Results/SchoolField/Revised/V0EvoCl.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+print(pEvoCl)
 dev.off()

@@ -10,7 +10,7 @@ library(grid)
 
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("multiplot.R")
-dat <- read.csv("../Results/FurtherMods/a_Ea_b0.csv")
+dat <- read.csv("../Results/FurtherMods/a_Ea_b0_Mean.csv")
 dat <- dat[,2:8]
 dat$Ea <- -dat$Ea
 datCl <- subset(dat, dat$Genus == "Cloeon")
