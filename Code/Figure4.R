@@ -8,10 +8,10 @@ library(data.table)
 library(gridExtra)
 
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
-dat <- read.csv("../Results/SchoolField/Revised/UsedValuesMean2.csv")
+dat <- read.csv("../Results/SchoolField/Revised/UsedValuesMean.csv")
 dat$site <- factor(dat$site, levels = c("Jaca","Penalara","Porto","Toledo","Evora","Murcia"))
+dat$Site.April.mean.temp <- round(dat$Site.April.mean.temp, digits = 2)
 dat$Site.April.mean.temp <- as.factor(dat$Site.April.mean.temp)
-dat <- dat[c(1:2,4:12),]
 colours <- c("orange","pink","darkred")
 
 
@@ -65,9 +65,9 @@ dev.off()
 ############################################################
 source("multiplot.R")
 p1 <- p1 + theme(axis.title.x=element_blank())
-#p2 <- p2 + theme(axis.title.x=element_blank())
+p2 <- p2 + theme(axis.title.x=element_blank())
 
-tiff("../Results/SchoolField/Revised/combinedPoints.tiff", width = 30, height = 40, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/SchoolField/Revised/combinedPoints.tiff", width = 40, height = 15, units = 'cm', res = 300, compression = 'lzw')
 #multiplot(p1,p2,p3, labs=list("Genus",""), cols = 3)
-multiplot(p1,p2, cols = 1)
+multiplot(p1,p2, cols = 2)
 dev.off()

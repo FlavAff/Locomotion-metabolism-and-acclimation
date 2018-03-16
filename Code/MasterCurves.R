@@ -7,7 +7,7 @@ library(ggplot2)
 library(data.table)
 library(truncnorm)
 
-setwd("~/Documents/MSc/CMEECourseWork/Project/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("DataClean.R")
 rm(list=setdiff(ls(), c("chir","dipt","strio","k")))
 source("Schoolfields.R")
@@ -15,7 +15,7 @@ source("GetParas.R")
 source("Startcalls.R")
 
 #set the number of starting values to sample
-tries <- 100
+tries <- 10000
 
 #Get the estimated paramters for both mass corrected and raw oxygen consumption from Arrhenius first
 ChirToNo <- ToledoNo_strt(chir)

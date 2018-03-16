@@ -87,24 +87,24 @@ dipt_m <- mean(dipt$Mass)/1000
 stri_m <- mean(strio$Mass)/1000
 
 #plot the predator-prey velocity curves
-pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Toledo"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
+pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Porto"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
 #remeber to unhash function to get title on plot here:
 pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
 
-pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Toledo"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
+pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Porto"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
 pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
 
 #modify plots befor multiplot run
-pTolCh <- pTolCh + ggtitle("Cool site (Toledo)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +
+pTolCh <- pTolCh + ggtitle("Cool site (Porto)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +
   theme(axis.title.x=element_blank()) + theme(legend.position = "none") + theme(axis.title.y=element_blank()) +
   #theme(plot.margin=unit(c(0.5,1.5,1,4),"cm")) + 
-  geom_rect(aes(xmin=33.6, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=24.992, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pEvoCh <- pEvoCh + theme(axis.title.x=element_blank()) + theme(axis.title.y=element_blank())+
   #theme(plot.margin=unit(c(0.5,0.5,1,1),"cm")) + 
   geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pTolCl <- pTolCl + theme(legend.position = "none") + theme(axis.title.x=element_blank()) + 
   theme(axis.title.y=element_blank()) + #theme(plot.margin=unit(c(0.5,1.5,1.5,4),"cm")) + 
-  geom_rect(aes(xmin=33.6, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=24.992, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
 pEvoCl <- pEvoCl + theme(axis.title.y=element_blank()) + theme(axis.title.x=element_blank())+
   #theme(plot.margin=unit(c(0.5,0.5,1.5,1),"cm")) +
   geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
@@ -120,10 +120,10 @@ pEvoCl <- pEvoCl + theme(axis.title.y=element_blank()) + theme(axis.title.x=elem
 
 pEvoCh <- pEvoCh + theme(legend.position = "none")
 pEvoCl <- pEvoCl + theme(legend.position = "none")
-tiff("../Results/SchoolField/Revised/V0TolCh.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/SchoolField/Revised/V0PorCh.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
 print(pTolCh)
 dev.off()
-tiff("../Results/SchoolField/Revised/V0TolCl.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/SchoolField/Revised/V0PorCl.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')
 print(pTolCl)
 dev.off()
 tiff("../Results/SchoolField/Revised/V0EvoCh.tiff", width = 15, height = 15, units = 'cm', res = 300, compression = 'lzw')

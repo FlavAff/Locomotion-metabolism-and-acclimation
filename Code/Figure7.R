@@ -11,8 +11,8 @@ library(grid)
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("multiplot.R")
 dat <- read.csv("../Results/FurtherMods/a_Ea_b0_Mean.csv")
-dat <- dat[,2:8]
-dat$Ea <- -dat$Ea
+dat <- dat[,2:9]
+#dat$Ea <- -dat$Ea
 datCl <- subset(dat, dat$Genus == "Cloeon")
 datCh <- subset(dat, dat$Genus == "Chironomus")
 
@@ -34,18 +34,18 @@ p <- p + theme(strip.text.x = element_text(size = 17)) + theme(legend.position =
 p2 <- p + facet_grid( .~ Strategy, scales = "free", space = "free")
 p2
 
-p <- ggplot(data = datCl, aes(x = Site, y = ln.b0)) + geom_point(aes(color=Site),size=I(3))+ 
+p <- ggplot(data = datCl, aes(x = Site, y = b0)) + geom_point(aes(color=Site),size=I(3))+ 
   theme_classic() + theme(axis.title=element_text(size=22)) + ylab("ln(B0)") + theme(axis.text=element_text(size=15))
-p <- p + geom_errorbar(aes(ymin = ln.b0 - 1.96*ln.b0_se, ymax = ln.b0 + 1.96*ln.b0_se, color = Site, width=.2))
+p <- p + geom_errorbar(aes(ymin = b0 - 1.96*b0_se, ymax = b0 + 1.96*b0_se, color = Site, width=.2))
 p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20))
 p <- p + scale_colour_manual(name="Site of Origin", values=c(rgb(0,0.5,1),rgb(1,0.25,0)))
 p <- p + theme(strip.text.x = element_text(size = 17)) + theme(legend.position = "none")
 p3 <- p + facet_grid( .~ Strategy, scales = "free", space = "free")
 p3
 
-p <- ggplot(data = datCh, aes(x = Site, y = ln.b0)) + geom_point(aes(color=Site),size=I(3))+ 
+p <- ggplot(data = datCh, aes(x = Site, y = b0)) + geom_point(aes(color=Site),size=I(3))+ 
   theme_classic() + theme(axis.title=element_text(size=22)) + ylab("ln(B0)") + theme(axis.text=element_text(size=15))
-p <- p + geom_errorbar(aes(ymin = ln.b0 - 1.96*ln.b0_se, ymax = ln.b0 + 1.96*ln.b0_se, color = Site, width=.2))
+p <- p + geom_errorbar(aes(ymin = b0 - 1.96*b0_se, ymax = b0 + 1.96*b0_se, color = Site, width=.2))
 p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20))
 p <- p + scale_colour_manual(name="Site of Origin", values=c(rgb(0,0.5,1),rgb(1,0.25,0)))
 p <- p + theme(strip.text.x = element_text(size = 17)) + theme(legend.position = "none")
@@ -82,7 +82,7 @@ for (i in c(seq(5,8,1),seq(13,16,1))){
   deltaE <- dat[i,4] - dat[i-4,4]
   deltaB <- dat[i,6] - dat[i-4,6]
   deltaEse <- dat[i,5] - dat[i-4,5]
-  deltaBse <- dat[i,7] - dat[i-4,7]
+  deltaBse <- dat[i,8] - dat[i-4,8]
   
   deltasE <- c(deltaE,deltasE)
   deltasB <- c(deltaB,deltasB)
@@ -124,6 +124,8 @@ tiff("../Results/FurtherMods/deltaB0_point.tiff", width = 15, height = 10, units
 print(p6)
 dev.off()
 
+p6 <- p6 + theme(axis.title.x=element_blank())
+p5 <- p5 + theme(axis.title.x=element_blank())
 tiff("../Results/FurtherMods/delta_point.tiff", width = 30, height = 10, units = 'cm', res = 300, compression = 'lzw')
-multiplot(p5, p6, cols=2)
+multiplot(p6, p5, cols=2)
 dev.off()

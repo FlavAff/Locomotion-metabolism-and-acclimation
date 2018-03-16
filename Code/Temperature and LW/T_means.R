@@ -116,3 +116,46 @@ p <- ggplot(data = MesoTemps, aes(Temperature)) + geom_bar(alpha=.7,size=I(1),co
   theme_classic() + theme(axis.title=element_text(size=22)) + theme(axis.text=element_text(size=15))
 p <- p + facet_grid(Site~., scales = "free", space = "free")
 p
+
+##############################################################################
+#Temperatures per month (messy code)
+Results2 <- data.frame()
+FinalRes <- data.frame()
+Results2 <- rename(Results2, c("X1" = "Mean.Month.Temperature","X2" = "Mean.SE"))
+setattr(Results2, "row.names", c(rep("Evora",12),rep("Jaca",12),rep("Murcia",12),rep("Penalara",12),rep("Porto",12),rep("Toledo",12)))
+
+for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
+  
+  site <- subset(MesoTemps, MesoTemps$Site == i)
+  
+  for(j in c(1:12)){
+    T.mean <- mean(site[site$Month == j,]$Temperature)
+    T.mean.se <- sd(site[site$Month == j,]$Temperature)/sqrt(length(site$Temperature))
+  
+    Results2[j,"Month"] = j
+    Results2[j,"Mean.Month.Temperature"] = T.mean
+    Results2[j,"Mean.SE"] = T.mean.se
+  }
+  FinalRes <- rbind(FinalRes,Results2)
+}
+
+NewRes <- subset(FinalRes, FinalRes$Month != "NA")
+NewRes$Site <- c(rep("Evora",12),rep("Jaca",12),rep("Murcia",12),rep("Penalara",12),rep("Porto",12),rep("Toledo",12))
+NewRes$month <- rep(c("January","February","March","April","May","June","July","August","September","October","November","December"))
+NewRes$month <- factor(NewRes$month, levels = c("January","February","March","April","May","June","July","August","September","October","November","December"))
+NewRes$Site <- factor(NewRes$Site, levels = c("Murcia","Evora","Toledo","Porto","Jaca","Penalara"))
+rm(list=setdiff(ls(), c("NewRes")))
+p <- ggplot(NewRes, aes(month, Site, fill = Mean.Month.Temperature)) + geom_tile()
+p <- p + theme_classic() + ylab("Site") + xlab("Month") + theme(axis.title=element_text(size=32),
+                                                                axis.text=element_text(size=22),
+                                                                legend.text=element_text(size=24),
+                                                                legend.title=element_text(size=30)) +
+  labs(fill='Mean \ntemperature') + scale_fill_gradientn(colours=c("#0C10E4","#1810D9","#2410CE","#3010C3",
+                                                                  "#3D10B8","#4910AD","#5510A2","#621198",
+                                                                  "#6E118D","#7A1182","#871177","#93116C",
+                                                                  "#9F1161","#AC1257","#B8124C","#C41241",
+                                                                  "#D11236","#DD122B","#E91220","#F61315"))
+p
+tiff("../../Results/Temperature/MonthlyTemperatures.tiff", width = 60, height = 40, units = 'cm', res = 300, compression = 'lzw')
+print(p)
+dev.off()
