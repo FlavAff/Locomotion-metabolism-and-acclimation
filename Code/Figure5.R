@@ -62,10 +62,10 @@ Plot_two_curves_v0 <- function(spp1,spp2,locations,spp1_values,spp2_values,GCOT1
       ylab(expression(paste("Speed (m/s)"))) 
     p <- p + geom_line(data = Model2, aes(x = Temperature, y = exp(d2), colour = spp2$genus[1]), size = I(2), alpha = 0.7)
     #p <- p + scale_color_discrete(name = "Genus") #+ ggtitle(paste("Predator - Prey TPCs from",i)) +
-    if (locations == "Evora" && preycol == "orange"){
+    if (locations == "Evora" && preycol == "darkgreen"){
       p <- p + ggtitle("Warm site (Evora)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5))
     }
-    p <- p + scale_colour_manual(name="Genus", values=c(preycol,"darkred"))
+    p <- p + scale_colour_manual(name="Genus", values=c(preycol,"orange"))
     p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20)) + theme(axis.text=element_text(size=15))
     #theme(plot.title = element_text(face="bold"))
     #open the pdf and put the plot in it
@@ -87,27 +87,27 @@ dipt_m <- mean(dipt$Mass)/1000
 stri_m <- mean(strio$Mass)/1000
 
 #plot the predator-prey velocity curves
-pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Porto"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
+pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Porto"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"darkgreen")
 #remeber to unhash function to get title on plot here:
-pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"orange")
+pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"darkgreen")
 
-pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Porto"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
-pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"pink")
+pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Porto"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"lightgreen")
+pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"lightgreen")
 
 #modify plots befor multiplot run
 pTolCh <- pTolCh + ggtitle("Cool site (Porto)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +
   theme(axis.title.x=element_blank()) + theme(legend.position = "none") + theme(axis.title.y=element_blank()) +
   #theme(plot.margin=unit(c(0.5,1.5,1,4),"cm")) + 
-  geom_rect(aes(xmin=24.992, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=24.992, ymin=-Inf, ymax=Inf), fill="blue", size = I(2), alpha = 0.2)
 pEvoCh <- pEvoCh + theme(axis.title.x=element_blank()) + theme(axis.title.y=element_blank())+
   #theme(plot.margin=unit(c(0.5,0.5,1,1),"cm")) + 
-  geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=30.192, ymin=-Inf, ymax=Inf), fill="red", size = I(2), alpha = 0.2)
 pTolCl <- pTolCl + theme(legend.position = "none") + theme(axis.title.x=element_blank()) + 
   theme(axis.title.y=element_blank()) + #theme(plot.margin=unit(c(0.5,1.5,1.5,4),"cm")) + 
-  geom_rect(aes(xmin=24.992, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=24.992, ymin=-Inf, ymax=Inf), fill="blue", size = I(2), alpha = 0.2)
 pEvoCl <- pEvoCl + theme(axis.title.y=element_blank()) + theme(axis.title.x=element_blank())+
   #theme(plot.margin=unit(c(0.5,0.5,1.5,1),"cm")) +
-  geom_rect(aes(xmin=30.192, xmax=45, ymin=-Inf, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=30.192, ymin=-Inf, ymax=Inf), fill="red", size = I(2), alpha = 0.2)
 
 #pCh <- grid_arrange_shared_legend(pTolCh, pEvoCh, ncol = 2, nrow = 1)
 #pCl <- grid_arrange_shared_legend(pTolCl, pEvoCl, ncol = 2, nrow = 1)

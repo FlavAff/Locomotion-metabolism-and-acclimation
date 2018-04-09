@@ -36,15 +36,15 @@ p3 <- SiteSearchRate.Vopt4.version1("Porto",strio,chir,"Sympetrum","Chironomus",
 
 #Figure 6 will be made in seashore
 p1 <- p1 + theme(axis.title = element_blank(),legend.position = "none") + 
-  geom_rect(aes(xmin=24.992, xmax=45, ymin=0, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=24.992, ymin=0, ymax=Inf), fill="blue", size = I(2), alpha = 0.2)
 p2 <- p2 + theme(axis.title = element_blank(),legend.position = "none") + 
-  geom_rect(aes(xmin=30.192, xmax=45, ymin=0, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=30.192, ymin=0, ymax=Inf), fill="red", size = I(2), alpha = 0.2)
 p3 <- p3 + theme(axis.title = element_blank(),legend.position = "none") + ggtitle("Cool site (Porto)") + 
   theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) + 
-  geom_rect(aes(xmin=24.992, xmax=45, ymin=0, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=24.992, ymin=0, ymax=Inf), fill="blue", size = I(2), alpha = 0.2)
 p4 <- p4 + theme(axis.title = element_blank(),legend.position = "none") + ggtitle("Warm site (Evora)") + 
   theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) + 
-  geom_rect(aes(xmin=30.192, xmax=45, ymin=0, ymax=Inf), size = I(2), alpha = 0.2)
+  geom_rect(aes(xmin=10, xmax=30.192, ymin=0, ymax=Inf), fill="red", size = I(2), alpha = 0.2)
 tiff("../Results/FurtherMods/aChirP.tiff", width = 10, height = 10, units = 'cm', res = 300, compression = 'lzw')
 print(p3)
 dev.off()

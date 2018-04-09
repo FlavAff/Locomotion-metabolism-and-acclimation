@@ -81,6 +81,7 @@ for (i in c("Evora","Jaca","Murcia","Penalara","Porto","Toledo")){
 
 write.csv(Results, paste0("../../Results/Temperature/MeanTemp.csv"))
 MesoTemps$Site <- factor(MesoTemps$Site, levels = c("Penalara","Jaca","Porto","Toledo","Evora","Murcia"))
+MesoTemps$Month.Name <- factor(MesoTemps$Month.Name, levels = c("January","February","March","April","May","June","July","August","September","October","November","December"))
 tiff("../../Results/Temperature/TBox.tiff", width = 20, height = 15, units = 'cm', res = 300, compression = 'lzw')
 plot(MesoTemps$Site,MesoTemps$Temperature)
 dev.off()
@@ -99,14 +100,16 @@ tiff("../../Results/Temperature/TMeans.tiff", width = 20, height = 15, units = '
 print(p1)
 dev.off()
 
+MesoTemps <- subset(MesoTemps, MesoTemps$Month.Name %in% c("January","February","March","April","May","June","July","August","September","October","November","December"))
 Means <- data.frame(Mean=Results$Mean.Temperature,Site=Results$Site)
-p <- ggplot(data = MesoTemps, aes(x = Month, y = Temperature)) + geom_point(alpha=.7,size=I(1),colour="blue") + 
+p <- ggplot(data = MesoTemps, aes(x = Month.Name, y = Temperature)) + geom_point(size=I(1),colour="blue",shape=1) + 
   ylim(min(MesoTemps$Temperature),max(MesoTemps$Temperature)) + 
-  theme_classic() + theme(axis.title=element_text(size=22)) + ylab("Temperature") + theme(axis.text=element_text(size=15))
+  theme_classic() + theme(axis.title=element_text(size=34),axis.text=element_text(size=22),strip.text = element_text(size = 26)) + 
+  ylab("Temperature (°C)") + xlab("Month")
 p <- p + facet_grid(Site~., scales = "free", space = "free")
 p <- p + geom_hline(data=Means, aes(yintercept=Mean), color = ("red"))
-p
-tiff("../../Results/Temperature/SiteTemperatures.tiff", width = 20, height = 50, units = 'cm', res = 300, compression = 'lzw')
+#p
+tiff("../../Results/Temperature/SiteTemperatures.tiff", width = 50, height = 60, units = 'cm', res = 300, compression = 'lzw')
 print(p)
 dev.off()
 

@@ -10,14 +10,15 @@ library(gridExtra)
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 dat <- read.csv("../Results/SchoolField/Revised/UsedValuesMean.csv")
 dat$site <- factor(dat$site, levels = c("Jaca","Penalara","Porto","Toledo","Evora","Murcia"))
-dat$Site.April.mean.temp <- round(dat$Site.April.mean.temp, digits = 2)
+dat$Site.April.mean.temp <- round(dat$Site.April.mean.temp, digits = 1)
+dat[12,5]<-"11.0"
 dat$Site.April.mean.temp <- as.factor(dat$Site.April.mean.temp)
-colours <- c("orange","pink","darkred")
+colours <- c("darkgreen","lightgreen","orange")
 
 
 p <- ggplot(data = dat, aes(x = Site.April.mean.temp, y = B0_end)) + geom_point(aes(color=Genus, shape=Genus),size=I(4)) + 
   #geom_line(aes(group=Genus, color=Genus)) + 
-  theme_classic() + theme(axis.title=element_text(size=22)) + ylab(expression(paste("B0 (",mu,"mol/h)"))) +
+  theme_classic() + theme(axis.title=element_text(size=22)) + ylab(expression(paste("B0 (",mu,"mol/mgL)"))) +
   xlab("Mean Site Temperature (°C)") + theme(axis.text=element_text(size=15))
 p <- p + geom_errorbar(aes(ymin = B0_end - 1.96*B0_se, ymax = B0_end + 1.96*B0_se, color = Genus, width=.2))
 p <- p + theme(strip.text.x = element_text(size = 17, face = 'italic')) + theme(legend.position = "none")
@@ -66,8 +67,9 @@ dev.off()
 source("multiplot.R")
 p1 <- p1 + theme(axis.title.x=element_blank())
 p2 <- p2 + theme(axis.title.x=element_blank())
+p3 <- p3 + theme(axis.title.x=element_blank())
 
-tiff("../Results/SchoolField/Revised/combinedPoints.tiff", width = 40, height = 15, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/SchoolField/Revised/combinedPoints.tiff", width = 25, height = 40, units = 'cm', res = 300, compression = 'lzw')
 #multiplot(p1,p2,p3, labs=list("Genus",""), cols = 3)
-multiplot(p1,p2, cols = 2)
+multiplot(p1,p3,p2, cols = 1)
 dev.off()
