@@ -9,10 +9,11 @@ library(gridExtra)
 
 setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 dat <- read.csv("../Results/SchoolField/Revised/UsedValuesMean.csv")
-dat$site <- factor(dat$site, levels = c("Jaca","Penalara","Porto","Toledo","Evora","Murcia"))
 dat$Site.April.mean.temp <- round(dat$Site.April.mean.temp, digits = 1)
 dat[12,5]<-"11.0"
 dat$Site.April.mean.temp <- as.factor(dat$Site.April.mean.temp)
+dat$Site.April.mean.temp <- factor(dat$Site.April.mean.temp, levels= c("7.3", "11.0", "12.7", "13.5", "14.9", "16.2")) 
+#dat$site <- factor(dat$site, levels = c("Jaca","Penalara","Porto","Toledo","Evora","Murcia"))
 colours <- c("darkgreen","lightgreen","orange")
 
 
