@@ -1,6 +1,6 @@
 rm(list = ls())
-setwd("~/Documents/Stuff/Project/")
-LW <- read.csv("Data/LW_reg.csv")
+setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/Temperature and LW/")
+LW <- read.csv("../../Data/LW_reg.csv")
 
 
 for (i in LW$Taxa){
