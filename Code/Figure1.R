@@ -6,7 +6,7 @@ library(minpack.lm)
 library(ggplot2)
 library(data.table)
 
-setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("Schoolfields2.R")
 k <- 8.617*(10^-5)
 
@@ -48,29 +48,29 @@ Model2 <- data.frame(Temperature, dV)
 Model3 <- data.frame(Temperature, dE)
 
 #create plot 1
-p <- ggplot() + theme_classic() +
-  geom_line(data = Model1, aes(x = Temperature, y = d1), size = I(2), alpha = 0.7) + 
-  theme(axis.title=element_text(size=28,face="bold"), axis.text=element_blank()) +
-  theme(axis.title = element_blank())
+#p <- ggplot() + theme_classic() +
+#  geom_line(data = Model1, aes(x = Temperature, y = d1), size = I(2), alpha = 0.7) + 
+#  theme(axis.title=element_text(size=28,face="bold"), axis.text=element_blank()) +
+#  theme(axis.title = element_blank())
   #xlab(expression(paste("Temperature (", degree, C, ")"))) + 
   #ylab(expression(paste("Oxygen Consumption (",mu,"mol/h)")))# + ylim(0,1.3)
-p <- p + geom_vline(xintercept=5, linetype="dotted") + geom_vline(xintercept=33, linetype="dotted")
-p <- p + annotate("text", x = 37, y = max(Model1$d1)+.4, label = "T[pk]", size = 10, parse = T)
-p <- p + annotate("text", x = 25, y = -0.8, label = "E[a]", size = 10, parse = T)
-p <- p + annotate("text", x = 43, y = -0.7, label = "E[d]", size = 10, parse = T)
-p <- p + annotate("text", x = 18, y = .8, label = "Operational \n Temperature \n Range", size = 10)
-p <- p + annotate("text", x = 1, y = 1.2, label = "A)", size = 10)
-p <- p + geom_segment(aes(x=36, xend=36, y=max(Model1$d1)+.25, yend=max(Model1$d1)+.05), size = 2,
-                      arrow = arrow(length = unit(0.5, "cm")))
-p <- p + geom_segment(aes(x=20, xend=25, y=-0.9, yend=-.4), size = 2,
-                      arrow = arrow(length = unit(0.5, "cm")))
-p <- p + geom_segment(aes(x=43, xend=47, y=-.3, yend=-0.9), size = 2,
-                      arrow = arrow(length = unit(0.5, "cm")))
-p <- p + ylim(min(d1),1.2)
-p1 <- p + geom_rect(aes(xmin=5, xmax=33, ymin=min(d1), ymax=Inf), size = I(2), alpha = 0.1)
-tiff("../Results/ConceptA.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
-print(p1)
-dev.off()
+#p <- p + geom_vline(xintercept=5, linetype="dotted") + geom_vline(xintercept=33, linetype="dotted")
+#p <- p + annotate("text", x = 37, y = max(Model1$d1)+.4, label = "T[pk]", size = 10, parse = T)
+#p <- p + annotate("text", x = 25, y = -0.8, label = "E[a]", size = 10, parse = T)
+#p <- p + annotate("text", x = 43, y = -0.7, label = "E[d]", size = 10, parse = T)
+#p <- p + annotate("text", x = 18, y = .8, label = "Operational \n Temperature \n Range", size = 10)
+#p <- p + annotate("text", x = 1, y = 1.2, label = "A)", size = 10)
+#p <- p + geom_segment(aes(x=36, xend=36, y=max(Model1$d1)+.25, yend=max(Model1$d1)+.05), size = 2,
+#                      arrow = arrow(length = unit(0.5, "cm")))
+#p <- p + geom_segment(aes(x=20, xend=25, y=-0.9, yend=-.4), size = 2,
+#                      arrow = arrow(length = unit(0.5, "cm")))
+#p <- p + geom_segment(aes(x=43, xend=47, y=-.3, yend=-0.9), size = 2,
+#                      arrow = arrow(length = unit(0.5, "cm")))
+#p <- p + ylim(min(d1),1.2)
+#p1 <- p + geom_rect(aes(xmin=5, xmax=33, ymin=min(d1), ymax=Inf), size = I(2), alpha = 0.1)
+#tiff("../Results/ConceptA.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+#print(p1)
+#dev.off()
 
 #create plot 2
 p <- ggplot() + theme_classic() +
@@ -83,13 +83,13 @@ p <- ggplot() + theme_classic() +
   #ylab(expression(paste("Oxygen Consumption (",mu,"mol/h)"))) #+ ylim(0,1.25)
 p <- p + annotate("text", x = 12, y = 1.1, label = "Increase in \n performance", size = 10)
 #p <- p + annotate("text", x = 50, y = 1.9, label = "Warm adapted \n species", size = 10)
-p <- p + annotate("text", x = 1, y = 1.2, label = "B)", size = 10)
+p <- p + annotate("text", x = 1, y = 1.2, label = "A)", size = 10)
 p <- p + geom_segment(aes(x=23, xend=23, y=min(d1), yend=.07), size = 2, linetype = "dashed", alpha = 0.5)
 p <- p + geom_segment(aes(x=20, xend=20, y=min(d1), yend=-.65), size = 2, linetype = "dashed", alpha = 0.5)
 p <- p + ylim(min(d1),1.2)
 p2 <- p + annotate("text", x=21, y=.3, label = "b[0]", size=10, parse = TRUE)
 #p2 <- p + annotate("text", x = 32, y = 0.1, label = "Cold adapted species", size = 10)
-tiff("../Results/ConceptB.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/ConceptA.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p2)
 dev.off()
 
@@ -103,24 +103,24 @@ p <- ggplot() + theme_classic() +
   #ylab(expression(paste("Oxygen Consumption (",mu,"mol/h)"))) #+ ylim(0,1.25)
 p <- p + annotate("text", x = 12, y = 1.1, label = "Increase in \n peak temperature", size = 10)
 #p <- p + annotate("text", x = 8.5, y = 0.4, label = "Cold adapted \n species", size = 11)
-p <- p + annotate("text", x = 1, y = 1.2, label = "C)", size = 10)
+p <- p + annotate("text", x = 1, y = 1.2, label = "B)", size = 10)
 p <- p + geom_segment(aes(x=34, xend=44, y=.75, yend=.75), size = 2,
                       arrow = arrow(length = unit(0.5, "cm")))
 #p3 <- p + annotate("text", x = 38, y = 0.05, label = "Warm adapted species", size = 11)
 p <- p + ylim(min(d1),1.2)
 p3 <- p + annotate("text", x=40, y=.95, label = "T[pk]", size=10, parse = TRUE)
-tiff("../Results/ConceptC.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/ConceptB.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p3)
 dev.off()
 
 #create plot 4
 p <- ggplot() + theme_classic() +
   theme(axis.title=element_text(size=28,face="bold"), axis.text=element_blank()) +
-  geom_line(data = Model1, aes(x = Temperature, y = d1), size = I(2), alpha = 0.7, colour = "lightgreen", linetype = "dotted") + 
-  geom_line(data = Model2, aes(x = Temperature, y = dE), size = I(2), alpha = 1, colour = "lightgreen") +
+  geom_line(data = Model1, aes(x = Temperature, y = d1), size = I(2), alpha = 0.7, colour = rgb(.1,1,.5), linetype = "dotted") + 
+  geom_line(data = Model2, aes(x = Temperature, y = dE), size = I(2), alpha = 1, colour = rgb(.1,1,.5)) +
   theme(axis.title = element_blank()) 
 p <- p + annotate("text", x = 12, y = 1.1, label = "Increase in \n activation energy", size = 10)
-p <- p + annotate("text", x = 1, y = 1.2, label = "D)", size = 10)
+p <- p + annotate("text", x = 1, y = 1.2, label = "C)", size = 10)
 p <- p + geom_segment(aes(x=17, xend=23, y=-1.1, yend=-.5), size = 2, linetype = "dotted",
                       arrow = arrow(length = unit(0.5, "cm")))
 p <- p + geom_segment(aes(x=17, xend=23, y=-0.65, yend=.2), size = 2,
@@ -128,7 +128,7 @@ p <- p + geom_segment(aes(x=17, xend=23, y=-0.65, yend=.2), size = 2,
 p <- p + ylim(min(d1),1.2)
 p4 <- p + annotate("text", x=15, y=-.55, label = "E[a]", size=10, parse = TRUE)
 #p2 <- p + annotate("text", x = 32, y = 0.1, label = "Cold adapted species", size = 10)
-tiff("../Results/ConceptD.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+tiff("../Results/ConceptC.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p4)
 dev.off()
 ####################################################
@@ -213,17 +213,18 @@ p <- ggplot() + theme_classic() +
   theme(axis.title=element_text(size=28,face="bold"), axis.text=element_blank()) +
   geom_line(data = Model1, aes(x = Temperature, y = d1+0.02), size = I(2), alpha = 0.7, colour = "orange", linetype = "dotted") + 
   geom_line(data = Model1, aes(x = Temperature, y = d1), size = I(2), alpha = 1, colour = "darkgreen", linetype = "dotted") +
-  geom_line(data = Model1, aes(x = Temperature, y = d1-0.02), size = I(2), alpha = 1, colour = "lightgreen", linetype = "dotted") +
+  geom_line(data = Model1, aes(x = Temperature, y = d1-0.02), size = I(2), alpha = 1, colour = rgb(.1,1,.5), linetype = "dotted") +
   theme(axis.title = element_blank()) 
   #xlab(expression(paste("Temperature (", degree, C, ")"))) + 
   #ylab(expression(paste("Oxygen Consumption (",mu,"mol/h)"))) #+ ylim(0,1.25)
 p <- p + annotate("text", x = 9, y = 1.1, label = "Original \n 'match'", size = 10)
 p <- p + annotate("text", x = 15, y = -2, label = "Prey A", size = 10, colour = "darkgreen")
-p <- p + annotate("text", x = 13, y = -2.4, label = "Prey B", size = 10, colour = "lightgreen")
+p <- p + annotate("text", x = 13, y = -2.4, label = "Prey B", size = 10, colour = rgb(.1,1,.5))
 p <- p + annotate("text", x = 5, y = -1.5, label = "Predator", size = 10, colour = "orange")
 p <- p + ylim(min(d1),1.2)
-p6 <- p + annotate("text", x = 1, y = 1.2, label = "E)", size = 10)
-tiff("../Results/ConceptE.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+p <- p + geom_rect(aes(xmin=0, xmax=33, ymin=min(d1), ymax=Inf), size = I(2), alpha = 0.1)
+p6 <- p + annotate("text", x = 1, y = 1.2, label = "D)", size = 10)
+tiff("../Results/ConceptD.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p6)
 dev.off()
 
@@ -231,17 +232,18 @@ p <- ggplot() + theme_classic() +
   theme(axis.title=element_text(size=28,face="bold"), axis.text=element_blank()) +
   geom_line(data = Model2, aes(x = Temperature, y = dV), size = I(2), alpha = 0.7, colour = "orange") + 
   geom_line(data = Model1, aes(x = Temperature2, y = d1), size = I(2), alpha = 1, colour = "darkgreen") +
-  geom_line(data = Model3, aes(x = Temperature, y = dE), size = I(2), alpha = 0.7, colour = "lightgreen") +
+  geom_line(data = Model3, aes(x = Temperature, y = dE), size = I(2), alpha = 0.7, colour = rgb(.1,1,.5)) +
   theme(axis.title = element_blank()) 
   #xlab(expression(paste("Temperature (", degree, C, ")"))) + 
   #ylab(expression(paste("Oxygen Consumption (",mu,"mol/h)"))) #+ ylim(0,1.25)
 p <- p + annotate("text", x = 9, y = 1.1, label = "New \n 'mismatch'", size = 10)
 p <- p + annotate("text", x = 5, y = -1, label = "Predator", size = 10, colour = "orange")
 p <- p + annotate("text", x = 20, y = -2.5, label = "Prey A", size = 10, colour = "darkgreen")
-p <- p + annotate("text", x = 45, y = 1, label = "Prey B", size = 10, colour = "lightgreen")
+p <- p + annotate("text", x = 45, y = 1, label = "Prey B", size = 10, colour = rgb(.1,1,.5))
 p <- p + ylim(min(d1),1.2)
-p7 <- p + annotate("text", x = 1, y = 1.2, label = "F)", size = 10)
-tiff("../Results/ConceptF.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
+p <- p + geom_rect(aes(xmin=0, xmax=33, ymin=min(d1), ymax=Inf), size = I(2), alpha = 0.1)
+p7 <- p + annotate("text", x = 1, y = 1.2, label = "E)", size = 10)
+tiff("../Results/ConceptE.tiff", width = 25, height = 20, units = 'cm', res = 300, compression = 'lzw')
 print(p7)
 dev.off()
 

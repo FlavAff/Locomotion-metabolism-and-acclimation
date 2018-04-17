@@ -7,7 +7,7 @@ library(ggplot2)
 library(data.table)
 library(gridExtra)
 
-setwd("~/Documents/GitHub/Locomotion-metabolism-and-acclimation/Code/")
+setwd("~/GitHub/Locomotion-metabolism-and-acclimation/Code/")
 source("DataClean.R")
 rm(list=setdiff(ls(), c("chir","dipt","strio","k")))
 source("Schoolfields2.R")
@@ -63,7 +63,7 @@ Plot_two_curves_v0 <- function(spp1,spp2,locations,spp1_values,spp2_values,GCOT1
     p <- p + geom_line(data = Model2, aes(x = Temperature, y = exp(d2), colour = spp2$genus[1]), size = I(2), alpha = 0.7)
     #p <- p + scale_color_discrete(name = "Genus") #+ ggtitle(paste("Predator - Prey TPCs from",i)) +
     if (locations == "Evora" && preycol == "darkgreen"){
-      p <- p + ggtitle("Warm site (Evora)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5))
+      p <- p + ggtitle("Warm site (Evora)") + theme(title=element_text(size=18)) + theme(plot.title = element_text(hjust=.5))
     }
     p <- p + scale_colour_manual(name="Genus", values=c(preycol,"orange"))
     p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20)) + theme(axis.text=element_text(size=15))
@@ -91,11 +91,11 @@ pTolCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Porto"),str
 #remeber to unhash function to get title on plot here:
 pEvoCh <- Plot_two_curves_v0(spp1 = strio,spp2 = chir,locations = c("Evora"),stri_values,chir_values,stri_GCOT,chir_GCOT,stri_m,chir_m,"darkgreen")
 
-pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Porto"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"lightgreen")
-pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,"lightgreen")
+pTolCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Porto"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,rgb(.1,1,.5))
+pEvoCl <- Plot_two_curves_v0(spp1 = strio,spp2 = dipt,locations = c("Evora"),stri_values,dipt_values,stri_GCOT,dipt_GCOT,stri_m,dipt_m,rgb(.1,1,.5))
 
 #modify plots befor multiplot run
-pTolCh <- pTolCh + ggtitle("Cool site (Porto)") + theme(title=element_text(size=22)) + theme(plot.title = element_text(hjust=.5)) +
+pTolCh <- pTolCh + ggtitle("Cool site (Porto)") + theme(title=element_text(size=18)) + theme(plot.title = element_text(hjust=.5)) +
   theme(axis.title.x=element_blank()) + theme(legend.position = "none") + theme(axis.title.y=element_blank()) +
   #theme(plot.margin=unit(c(0.5,1.5,1,4),"cm")) + 
   geom_rect(aes(xmin=10, xmax=24.992, ymin=-Inf, ymax=Inf), fill="blue", size = I(2), alpha = 0.2)
