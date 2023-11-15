@@ -13,22 +13,27 @@ Vopt <- function(GMR,M,GCOT) {
   return(GMR/(GCOT*M*9.82))
 }
 
-active.search.rate.2D <- function(b0c,mc,Ec,bc,b0r,mr,Er,br,Temp,d0,Pd,i,c){
+Vopt2 <- function(GMR,M) {
   
-  return((i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/283.15)) + sqrt(1 + (i*c*(b0r/b0c))^2 * ((mr^(br))/(mc^(bc)))^2 * exp(2/k*(1/Temp-1/278.15)*(Ec-Er))))*2*d0*(mr*mc)^(Pd))
+  return(GMR/(1.1*M^(0.62)*9.82))
 }
 
-active.search.rate.3D <- function(b0c,mc,Ec,bc,b0r,mr,Er,br,Temp,d0,Pd,i,c){
+active.search.rate.2D <- function(b0c,mc,Ec,bc,b0r,mr,Er,br,Temp,d0,Pd,i,c,Tref){
   
-  return((i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/283.15)) + sqrt(1 + (i*c*(b0r/b0c))^2 * ((mr^(br))/(mc^(bc)))^2 * exp(2/k*(1/Temp-1/278.15)*(Ec-Er))))*pi*(d0*(mr*mc)^(Pd))^2)
+  return(sqrt(b0r^2*mr^(2*br)*exp((-2*Er/k)*(1/Temp-1/Tref))+b0c^2*mc^(2*bc)*exp((-2*Ec/k)*(1/Temp-1/Tref)))*2*d0*(mr*mc)^(Pd))
 }
 
-sessile.search.rate.2D <- function(b0c,mc,Ec,bc,mr,Temp,d0,Pd,i,c){
+active.search.rate.3D <- function(b0c,mc,Ec,bc,b0r,mr,Er,br,Temp,d0,Pd,i,c,Tref){
   
-  return(i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/283.15)) * 2*d0*(mr*mc)^(Pd))
+  return(sqrt(b0r^2*mr^(2*br)*exp((-2*Er/k)*(1/Temp-1/Tref))+b0c^2*mc^(2*bc)*exp((-2*Ec/k)*(1/Temp-1/Tref)))*pi*(d0*(mr*mc)^(Pd))^2)
 }
 
-sessile.search.rate.3D <- function(b0c,mc,Ec,bc,mr,Temp,d0,Pd,i,c){
+sessile.search.rate.2D <- function(b0c,mc,Ec,bc,mr,Temp,d0,Pd,i,c,Tref){
   
-  return((i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/283.15)) * pi*(d0*(mr*mc)^(Pd))^2))
+  return(i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/Tref)) * 2*d0*(mr*mc)^(Pd))
+}
+
+sessile.search.rate.3D <- function(b0c,mc,Ec,bc,mr,Temp,d0,Pd,i,c,Tref){
+  
+  return((i*c*b0c*mc^(bc)*exp((-Ec/k)*(1/Temp-1/Tref)) * pi*(d0*(mr*mc)^(Pd))^2))
 }

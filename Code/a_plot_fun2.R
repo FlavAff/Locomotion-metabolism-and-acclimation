@@ -44,7 +44,7 @@ SiteSearchRate.Vopt4.version1 <- function(sit,sppC,sppR,consumer,resource,maxi){
   p <- p + geom_line(data = aS3D, aes(x = Temperature, y = sessile3D, colour = "3D sessile prey"), size = I(1), alpha = 0.4)
   p <- p + geom_line(data = aA2D, aes(x = Temperature, y = active2D, colour = "2D active prey"), size = I(1), alpha = 0.4)
   p <- p + geom_line(data = aA3D, aes(x = Temperature, y = active3D, colour = "3D active prey"), size = I(1), alpha = .4)
-  p <- p + scale_color_discrete(name = "Model Strategy") + xlim(10,45) + ylim(0,maxi)#+ ggtitle(paste(sit,"Model Predictions")) + theme(plot.title = element_text(face="bold")) 
+  p <- p + scale_colour_viridis_d(name = "Model Strategy") + xlim(10,45) + ylim(0,maxi)#+ ggtitle(paste(sit,"Model Predictions")) + theme(plot.title = element_text(face="bold")) 
   p <- p + theme(legend.text=element_text(size=17)) + theme(legend.title=element_text(size=20)) + theme(axis.text=element_text(size=15))
   
   #open the pdf and put the plot in it
